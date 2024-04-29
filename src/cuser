@@ -15,18 +15,54 @@ Help(){
 
 
 if [[ -z $* ]]; then
-  echo  "   ______ __  __ _____  ______ ____  "
-  echo  "  / ____// / / // ___/ / ____// __ \ "
-  echo  " / /    / / / / \__ \ / __/  / /_/ / "
-  echo  "/ /___ / /_/ / ___/ // /___ / _, _/  "
-  echo  "\____/ \____/ /____//_____//_/ |_|   "
-  echo -e "\n"
 
-  i=1
+  i=0
 
-  while [[ $i -gt 0 ]]; do
+  while [[ $i -lt 1 ]];do
+    clear
+
+    echo  "   ______ __  __ _____  ______ ____  "
+    echo  "  / ____// / / // ___/ / ____// __ \ "
+    echo  " / /    / / / / \__ \ / __/  / /_/ / "
+    echo  "/ /___ / /_/ / ___/ // /___ / _, _/  "
+    echo  "\____/ \____/ /____//_____//_/ |_|   "
+    echo -e "\n"
+
+    echo -n "Nombre de usuario:"
+    read nombreUsuario
+
+    echo -n "Añadir a grupos:"
+    read addGroup
+
+    cat /etc/shells
+    echo -n "Shell:"
+    read mainShell
+
+    echo -e "\n"
+
+    echo -n "¿Crear directorio en /home? [y/n]:"
+    read directorio
+
+    if [[ -n $nombreUsuario ]]; then
+      i=1
+    fi
 
   done
+
+  if [[ $directorio == "y" ]]; then
+    useradd -m -G $addGroup -s $mainShell $nombreUsuario
+    echo -e "\nUsuario creado: \e[1;32m$nombreUsuario\e[0m \nAgregado a grupo(s): \e[1;33m$addGroup\e[0m \nDirectorio en /home: Si\nShell:$mainShell\n"
+  else
+    useradd -G $addGroup -s $mainShell $nombreUsuario
+    echo -e "\nUsuario creado: \e[1;32m$nombreUsuario\e[0m \nAgregado a grupo(s): \e[1;33m$addGroup\e[0m \nDirectorio en /home: No\nShell:$mainShell\n"
+  fi
+
+  echo -n "¿Desea asignar una contraseña? [y/n]"
+  read password
+
+  if [[ $password == "y" ]]; then
+    passwd $nombreUsuario
+  fi
 
   exit 1
 fi
